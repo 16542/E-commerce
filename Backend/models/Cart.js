@@ -1,11 +1,11 @@
 const mongoose =require('mongoose');
 const CartSchema = new mongoose.Schema({
     userId:{
-        type:string,
+        type:String,
         required:true,
         unique:true
     },
-    producs:[
+    products:[
         {
             productId:{
                 type:String

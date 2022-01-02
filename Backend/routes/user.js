@@ -1,4 +1,4 @@
-const { verify } = require("jsonwebtoken");
+// const { verify } = require("jsonwebtoken");
 const User = require("../models/User");
 const {
   verifyToken,
@@ -69,7 +69,7 @@ router.get("/stats",verifyTokenAndAdmin,async(req,res)=>{
       {$match:{createAt:{$gte:lastYear}}},
       {
         $project:{
-          month:{$month:"$createAt"},
+          month:{$month:"$createdAt"},
         },
       },
       {
@@ -80,6 +80,8 @@ router.get("/stats",verifyTokenAndAdmin,async(req,res)=>{
       }
     ])
     res.status(200).json(data)
+    console.log(data)
+    // console.log(month)
   }catch(err){
     res.status(500).json(err)
   }

@@ -1,16 +1,16 @@
 const mongoose =require('mongoose');
 const OrderSchema = new mongoose.Schema({
     userId:{
-        type:string,
+        type:String,
         required:true,
-        unique:true
+        unique:true,
     },
-    producs:[
+    products:[
         {
             productId:{
                 type:String
             },
-            quantité:{
+            quantity:{
                 type:Number,
                 default:1,
             }
@@ -20,9 +20,10 @@ const OrderSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    adress:{
+    address:{
         type:Object,
-        required:true
+        required:true,
+    
     },
     status:{
         type:String,

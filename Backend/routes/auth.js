@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/User");
 const CryptoJS = require("crypto-js");
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 //Register:
 router.post("/register", async (req, res) => {
   const newUser = new User({
@@ -24,22 +24,29 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ username: req.body.username });
-    !user && res.status(401).json("Wrong Credentiels !")
+    if (!user) {
+      return res.status(401).json("Wrong Credentiels !");
+    }
+
+    // !user &&  res.status(401).json("Wrong Credentiels !")
     const hashedPassword = CryptoJS.AES.decrypt(
       user.password,
       process.env.PASS_SEC
     );
     const Originalpassword = hashedPassword.toString(CryptoJS.enc.Utf8);
-        Originalpassword !==req.body.password && res.status(401).json("Wrong Credentiels !");
-        const accesToken =jwt.sign({
-            id:user._id, 
-            isAdmin:user.isAdmin
-        },process.env.JWT_SEC,
-        {expiresIn:"3d"}
-        )
-        const {password,... others}= user._doc
+    Originalpassword !== req.body.password &&
+      res.status(401).json("Wrong Credentiels !");
+    const accessToken = jwt.sign(
+      {
+        id: user._id,
+        isAdmin: user.isAdmin,
+      },
+      process.env.JWT_SEC,
+      { expiresIn: "3d" }
+    );
+    const { password, ...others } = user._doc;
 
-        res.status(200).json({...others,accesToken})
+    res.status(200).json({ ...others, accessToken });
   } catch (err) {
     res.status(500).json(err);
   }

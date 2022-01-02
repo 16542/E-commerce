@@ -1,5 +1,4 @@
 const Product = require("../models/Product");
-const product = require("../models/Product");
 const {
   verifyToken,
   verifyTokenAndAuthorization,
@@ -47,9 +46,11 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
 //GET Products
 router.get("/find/:id", async (req, res) => {
   try {
-    const Product = await Product.findById(req.params.id);
-    res.status(200).json(Product);
+    const product = await Product.findById(req.params.id);
+    
+    res.status(200).json(product);
   } catch (err) {
+    console.log(err)
     res.status(500).json(err);
   }
 });
@@ -60,12 +61,11 @@ router.get("/", async (req, res) => {
   try {
     let products;
     if (qNew) {
-      products = await Product.find().sort({ createdAt: -1 }).limit(5);
+      products = await Product.find().sort({ createdAt: -1 }).limit(1);
     } else if (qCategory) {
       products = await Product.find({ categories: { $in: [qCategory] } });
-
-    }else{
-        product = await Product.find()
+    } else {
+      products = await Product.find();
     }
 
     res.status(200).json(products);
@@ -73,29 +73,5 @@ router.get("/", async (req, res) => {
     res.status(500).json(err);
   }
 });
-// // GET USER STATS
-// router.get("/stats",verifyTokenAndAdmin,async(req,res)=>{
-//   const date =new Date()
-//   const lastYear= new Date(date.setFullYear(date.getFullYear()-1))
-//   try{
-//     const data = await User.aggregate([
-//       {$match:{createAt:{$gte:lastYear}}},
-//       {
-//         $project:{
-//           month:{$month:"$createAt"},
-//         },
-//       },
-//       {
-//         $group:{
-//           _id:"$month",
-//           total:{$sum:-1}
-//         }
-//       }
-//     ])
-//     res.status(200).json(data)
-//   }catch(err){
-//     res.status(500).json(err)
-//   }
-// })
 
 module.exports = router;
